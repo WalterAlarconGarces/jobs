@@ -6,35 +6,30 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-       
         <li class="nav-item">
           <%=link_to 'Posts', posts_path, class: 'nav-link'%>
         </li>
-
-
         <% if user_signed_in?%>
-        <li class="nav-item">
-          <%=link_to 'New post', new_post_path, class: 'nav-link'%>
-        </li>
-        <li class="nav-item">
-          <%=button_to 'Sign out', destroy_user_session_path, method: :delete,class: 'nav-link'%>
-        </li>
-        <li class="nav-item">
-                  <%=link_to 'Edit profile', edit_user_registration_path, class: 'nav-link'%>
+          <li class="nav-item">
+            <%=link_to 'New post', new_post_path, class: 'nav-link'%>
+          </li>
+          <li class="nav-item">
+            <%=button_to 'Sign out', destroy_user_session_path, method: :delete,class: 'nav-link'%>
+          </li>
+          <li class="nav-item">
+            <%=link_to 'Edit profile', edit_user_registration_path, class: 'nav-link'%>
           </li>
         <% else%>
+          <li class="nav-item">
+            <%=link_to 'Sign up', new_user_registration_path, class: 'nav-link'%>
+          </li>
+          <li class="nav-item">
+            <%=link_to 'Sign in', new_user_session_path, class: 'nav-link'%>
+          </li>
+        <%end%>
         <li class="nav-item">
-          <%=link_to 'Sign up', new_user_registration_path, class: 'nav-link'%>
-        </li>
-        <li class="nav-item">
-          <%=link_to 'Sign in', new_user_session_path, class: 'nav-link'%>
-        </li>
-      <%end%>
-        
-      <li class="nav-item">
           <%=link_to 'GitHub', "https://github.com/WalterAlarconGarces/animals", class: 'nav-link'%>
         </li>
-        
       </ul>
       <%if user_signed_in?%>
         <div class="mx-3">
@@ -44,13 +39,15 @@
           <% end%>
         </div>
       <%end%>
-
-      
-
       <%= form_with url: posts_path, method: :get do |form|%>
- <%= form.text_field :query_text, placeholder: 'Title or body', value: params[:query_text], id: "search_field"%>
- <button class="btn btn-outline-info" type="submit">Search</button>
-<%end%>
+        <%= form.text_field :query_text, placeholder: 'Title or body', value: params[:query_text], id: "search_field"%>
+        <button class="btn btn-outline-info" type="submit">Search</button>
+      <%end%>
+      <%if current_user.present?%>
+        <%if current_user.admin%>
+        <%=link_to 'Create new user', crear_nuevo_usuario_path, class: 'nav-link'%>
+      <%end%>  
+      <%end%>
     </div>
   </div>
 </nav>

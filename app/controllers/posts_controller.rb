@@ -3,6 +3,7 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :correct_user, only: %i[edit update destroy]
   before_action :authorize_user!, only: [:new, :create]
+ 
   # GET /posts or /posts.json
   def index
     @pagy, @posts = pagy(Post.all.reverse_order)
@@ -78,7 +79,30 @@ class PostsController < ApplicationController
       redirect_to root_path, notice: 'You are not authorized to perform this action.'
     end
   end
-
+  def new_user
+  end
+  def my_applications
+    @my_applications = Like.where(user_id: current_user.id)
+    @list_of_app_post_id = @my_applications.map(&:post_id)
+    puts "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+    @list_of_posts = Post.where(id: @list_of_app_post_id)
+    
+  end
+  def create_user
+    puts "WWWWWWWWWWWWWWWWWWWWWWWWS"
+     puts params
+      @user = User.new
+      @user.email = params[:email]
+      @user.password = params[:password]
+      @user.password_confirmation = params[:password_confirmation]
+      @user.admin = false
+      @user.name = params[:name]
+      @user.save
+      puts @user
+      redirect_to root_path, notice: "User #{@user.name}, password: #{@user.password}, email: #{@user.email} was created"
+    
+    
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -88,5 +112,9 @@ class PostsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def post_params
       params.require(:post).permit(:title, :body, :image, :user_id)
+    end
+
+    def user_params
+      params.permit(:email, :password, :password_confirmation, :admin, :name, :avatar)
     end
 end

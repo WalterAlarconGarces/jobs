@@ -13,28 +13,34 @@
       <li class="list-group-item">Created at: <%=post.created_at%></li>
       <li class="list-group-item">Post ID: <%=post.id%></li>
       <% if @users.present? %>
-      <li class="list-group-item">By user ID: <%=post.user_id%>, User photo: <%=image_tag @users.find(post.user_id).avatar , id: "mini_avatar"%></li>
-     <% else %>
-     <li class="list-group-item">By user ID: <%=post.user_id%>, User photo: <%=image_tag User.find(post.user_id).avatar , id: "mini_avatar"%></li>
-     <% end%>
-      <% if @post.present? %>
-      
-        <li class="list-group-item">How many likes: <%=@post.likes.count %></li>
+        <li class="list-group-item">By user ID: <%=post.user_id%>, User photo: <%=image_tag @users.find(post.user_id).avatar , id: "mini_avatar"%></li>
       <% else %>
-        <li class="list-group-item">How many likes: <%= @likes.where(post_id: post.id).count%></li>
-        
+        <li class="list-group-item">By user ID: <%=post.user_id%>, User photo: <%=image_tag User.find(post.user_id).avatar , id: "mini_avatar"%></li>
+      <% end%>
+      <% if @post.present? %>
+        <li class="list-group-item">How many applications: <%=@post.likes.count %></li>
+      <% else %>
+        <%if @likes.present? %>
+        <li class="list-group-item">How many applications: <%= @likes.where(post_id: post.id).count%></li>
+        <%end%>
       <% end%>
       <%if user_signed_in?%>
-      <% like = current_user.likes.find_by(post: @post)%>
+        <% like = current_user.likes.find_by(post: @post)%>
       <%end%>
       <%if @post.present?%>
         <% if like.nil?%>
-          <li class="list-group-item"><%= button_to "like", likes_path, params: {like:{post_id:@post.id}},method: :post	 ,class: "btn btn-primary"%></li>
+          <%if current_user.present?%>
+          <li class="list-group-item"><%= button_to "Apply to this job", likes_path, params: {like:{post_id:@post.id}},method: :post	 ,class: "btn btn-primary"%></li>
+          <%end%>
         <% else%>
-          <li class="list-group-item"><%= button_to "unlike", like_path(like), method: :delete,class: "btn btn-primary"	 %> </li>
+          <li class="list-group-item"><%= button_to "Delete Application", like_path(like), method: :delete,class: "btn btn-primary"	 %> </li>
         <% end%>
-        <li class="list-group-item"><%= link_to "Edit this post", edit_post_path(@post),class: "btn btn-primary" %> </li>
-        <li class="list-group-item"><%= button_to "Destroy this post", @post, method: :delete ,class: "btn btn-danger"%> </li>
+        <%if current_user.present?%>
+          <%if current_user.admin%>
+            <li class="list-group-item"><%= link_to "Edit this post", edit_post_path(@post),class: "btn btn-primary" %> </li>
+            <li class="list-group-item"><%= button_to "Destroy this post", @post, method: :delete ,class: "btn btn-danger"%> </li>
+          <%end%>
+        <%end%>
       <% end%>
       <%= link_to "Show this post", post, class: "btn btn-success" %>
     </ul>

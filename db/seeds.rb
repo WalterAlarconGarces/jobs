@@ -12,3 +12,6 @@
 
     puts User.find(1)
    
+   
+
+    

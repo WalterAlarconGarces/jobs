@@ -1,16 +1,23 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  
+  before_action :authorize_user!, only: [:create]
   before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
+  
 
 
   
 
   def create
-    user = User.create!(user_params)
-    session[:user_id] = user.id
-    redirect_to new_user_session_path
+    if !current_user.admin?
+      user = User.create!(user_params)
+      session[:user_id] = user.id
+      redirect_to new_user_session_path
+    else
+      super
+    end
   end
    
   # GET /resource/sign_up
@@ -59,6 +66,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.permit(:account_update, keys: [:image, :avatar])
   end
 
+
+  def authorize_user!
+    if current_user == nil
+      redirect_to root_path, notice: 'You are not authorized to perform this action. Only Admins are allowed to perform this action.'
+    else
+      if !current_user.admin
+       redirect_to root_path, notice: 'You are not authorized to perform this action.'
+      else
+        redirect_to new_user_session_path, notice: 'hola!'
+      end
+    end
+  end
   # The path used after sign up.
   # def after_sign_up_path_for(resource)
   #   super(resource)
