@@ -49,3 +49,7 @@
    border-radius: 50%;
    border-style: dotted;
 }
+.nav-item:hover {
+   background-color: darkgreen;
+   border-radius: 40%;
+}

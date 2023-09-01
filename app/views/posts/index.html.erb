@@ -1,4 +1,6 @@
-<h1>Posts</h1>
+
+<%if user_signed_in?%>
+<h1>Jobs</h1>
 <div id="posts" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4">
   <% @posts.each do |post| %>
     <%= render post %>
@@ -15,3 +17,8 @@
     </div>
   </div>
 </div>
+<%else%>
+<h1>Jobs</h1>
+<h4>Ask the administrator to create your account and remember to update your profile picture.</h4>
+<%= image_tag 'jobs.jpeg' , class: "mx-3 mb-3"%>
+<% end%>
